@@ -1,10 +1,8 @@
 import './App.css'
-import Home from './pages/Home'  // ✅ Импортируем страницу
+import Home from './pages/Home'  // Импортируем страницу
 
 function App() {
-  return (
-    <Home />
-  )
+  return <Home />
 }
 
 export default App
