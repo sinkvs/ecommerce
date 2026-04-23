@@ -54,31 +54,41 @@
     transform: scale(1.1);
 }
 
-/* Блок инфо снизу */
+/* Блок инфо, растягиваем на доступную высоту */
 .product-info {
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1; /*занимаем все оставшееся место*/
+    text-align: left; /*явно прижимаем текст к левому краю*/
 }
 
+/*бренд, фиксируем высоту*/
 .brand {
     color: #888;
     font-size: 14px;
     margin-bottom: 4px;
+    min-height: 20px; /*фикс высоты текста бренда*/
 }
 
+/*модель фиксируем высоту в 2 строки*/
 .model {
     font-size: 16px;
     font-weight: 600;
     margin: 0 0 8px 0;
     line-height: 1.4;
-
     display: -webkit-box;
     -webkit-line-clamp: 2; /*ставим ограничение в 2 строки*/
     -webkit-box-orient: vertical;
     overflow: hidden;
+    min-height: 44px;
+    text-align: left;
 }
 
+/*цена, прижимаем к низу карточки*/
 .price {
     font-size: 18px;
     font-weight: bold;
     color: #333;
+    margin-top: auto; /*здесь как раз и прижимаем отображение цены к низу*/
 }

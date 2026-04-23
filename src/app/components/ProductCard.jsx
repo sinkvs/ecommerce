@@ -33,9 +33,9 @@ function ProductCard({ product }) {
 
             {/*подписываем бренд, модель и цену*/}
             <div className="product-info">
-                <div>{product.make}</div>
-                <h3>{product.model}</h3>
-                <div>${product.price.toLocaleString()}</div>
+                <div className="brand">{product.make}</div>
+                <h3 className="model">{product.model}</h3>
+                <div className="price">${product.price.toLocaleString()}</div>
             </div>
         </div>
     )
