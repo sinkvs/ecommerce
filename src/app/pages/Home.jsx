@@ -23,9 +23,17 @@ function Home() {
         {/* Правая колонка: Товары */}
         <main className="content">
 
-          {/* Счётчик товаров */}
-          <div className="product-summary">
-            <h2>{tvProducts.length} Products</h2>
+          {/* Счётчик товаров и сортировка*/}
+          <div className="products-header">
+            <span className="products-count">{tvProducts.length} Products</span>
+
+            <div className="sort-container">
+              <label htmlFor="sort-select" className="sort-label">Sort by:</label>
+              <select id="sort-select" className="sort-dropdown">
+                <option value="">Price: High to Low</option>
+                <option value="">Price: Low to High</option>
+              </select>
+            </div>
           </div>
 
           {/* Сетка карточек товаров */}
