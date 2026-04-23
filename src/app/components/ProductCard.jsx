@@ -9,6 +9,9 @@ function ProductCard({ product }) {
     // Состояние для избранного
     const [isFavorite, setIsFavorite] = useState(false)
 
+    // Состояние для корзины
+    const [cartCount, setCartCount] = useState(0)
+
     return (
         <div className="product-card">
             {/* встраиваем бейдж special offer */}
@@ -36,6 +39,36 @@ function ProductCard({ product }) {
                 <div className="brand">{product.make}</div>
                 <h3 className="model">{product.model}</h3>
                 <div className="price">${product.price.toLocaleString()}</div>
+            </div>
+
+            {/*кнопка корзина и область счетчика*/}
+            <div className="cart-container">
+                {cartCount === 0 ? (
+                    /*Когда корзина пуста, показываем кноппку "добавить"*/
+                    <button
+                        className="add-to-cart-btn"
+                        onClick={() => setCartCount(1)}
+                    >
+                        Add to Cart
+                    </button>
+                ) : (
+                    /*товары есть, показываем счетчик*/
+                    <div className="cart-counter">
+                        <button
+                            className="counter-btn"
+                            onClick={() => setCartCount(cartCount - 1)}
+                        >
+                            -
+                        </button>
+                        <span className="counter-text">{cartCount} in cart </span>
+                        <button
+                            className="counter-btn"
+                            onClick={() => setCartCount(cartCount + 1)}
+                        >
+                            +
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     )

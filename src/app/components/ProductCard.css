@@ -92,3 +92,55 @@
     color: #333;
     margin-top: auto; /*здесь как раз и прижимаем отображение цены к низу*/
 }
+
+/* Контейнер для кнопки корзины */
+.cart-container {
+    padding: 0 16px 16px;
+}
+
+/* Кнопка Add to Cart */
+.add-to-cart-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #a7a7a7;
+}
+
+/* Счётчик корзины */
+.cart-counter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #8a8a8a69;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.counter-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: white;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #000000;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.counter-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
