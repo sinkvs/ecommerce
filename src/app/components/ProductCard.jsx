@@ -10,28 +10,33 @@ function ProductCard({ product }) {
     const [isFavorite, setIsFavorite] = useState(false)
 
     return (
-        <div>
+        <div className="product-card">
             {/* встраиваем бейдж special offer */}
             {product.isSpecialOffer && (
-                <span>Special Offer</span>
+                <span className="special-badge">Special Offer</span>
             )}
 
             {/* добавляем картинку */}
             <img
                 src={product.images[0]}
                 alt={product.model}
-                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                className="product-image"
             />
-            
-            {/*подписываем бренд, модель и цену*/}
-            <div>{product.make}</div>
-            <h3>{product.model}</h3>
-            <div>${product.price.toLocaleString()}</div>
 
             {/* Кнопка "избранное" */}
-            <button onClick={() => setIsFavorite(!isFavorite)}>
+            <button
+                className="favorite-btn"
+                onClick={() => setIsFavorite(!isFavorite)}
+            >
                 {isFavorite ? '❤️' : '🤍'}
             </button>
+
+            {/*подписываем бренд, модель и цену*/}
+            <div className="product-info">
+                <div>{product.make}</div>
+                <h3>{product.model}</h3>
+                <div>${product.price.toLocaleString()}</div>
+            </div>
         </div>
     )
 }
