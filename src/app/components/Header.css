@@ -66,3 +66,45 @@
   background-color: #f0f0f0;
   transform: scale(1.1);
 }
+
+/* ... Твой существующий код выше остается без изменений (~) ... */
+
+.icon-btn:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.1);
+}
+
+/* Кнопки навигации в ссылки */
+.nav-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666; 
+  font-family: inherit; 
+}
+
+/* Стиль для активной вкладки (когда мы на странице TV) */
+.nav-link.active {
+  color: #007bff; 
+  background-color: #e6f2ff; 
+  font-weight: bold;
+}
+
+/* Позиционирование для бейджа корзины */
+.cart-btn {
+  position: relative; 
+}
+
+/* Кружок с цифрой */
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%; 
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1; 
+}

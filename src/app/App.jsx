@@ -1,13 +1,11 @@
 import './App.css'
-import Home from './pages/Home'  // Импортируем страницу
-import Footer from './components/Footer' // Импортируем Footer
+import Container from './components/Container' 
 
 function App() {
   return (
     <div className="app">
-      <Home />
-      <Footer />
-    </div >
+      <Container />
+    </div>
   )
 }
 

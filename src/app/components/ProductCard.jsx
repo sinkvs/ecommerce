@@ -1,16 +1,11 @@
 import { useState } from "react"
 import './ProductCard.css'
 
-// создаем функцию-компонент с пропсом product
-function ProductCard({ product }) {
-    console.log('Product:', product)
-    console.log('Images:', product.images)
+// Компонент карточки товара с кнопками добавления/изменения количества в корзине
+function ProductCard({ product, addToCart, quantityInCart, updateQuantity }) {
 
     // Состояние для избранного
     const [isFavorite, setIsFavorite] = useState(false)
-
-    // Состояние для корзины
-    const [cartCount, setCartCount] = useState(0)
 
     // Состояние для карусели (индекс текущей картинки)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -85,11 +80,11 @@ function ProductCard({ product }) {
 
             {/*кнопка корзина и область счетчика*/}
             <div className="cart-container">
-                {cartCount === 0 ? (
+                {quantityInCart === 0 ? (
                     /*Когда корзина пуста, показываем кноппку "добавить"*/
                     <button
                         className="add-to-cart-btn"
-                        onClick={() => setCartCount(1)}
+                        onClick={() => addToCart(product.id)}
                     >
                         Add to Cart
                     </button>
@@ -98,14 +93,16 @@ function ProductCard({ product }) {
                     <div className="cart-counter">
                         <button
                             className="counter-btn"
-                            onClick={() => setCartCount(cartCount - 1)}
+                            onClick={() => updateQuantity(product.id, -1)}
                         >
                             -
                         </button>
-                        <span className="counter-text">{cartCount} in cart </span>
+
+                        <span className="counter-text">{quantityInCart} in cart </span>
+
                         <button
                             className="counter-btn"
-                            onClick={() => setCartCount(cartCount + 1)}
+                            onClick={() => updateQuantity(product.id, 1)}
                         >
                             +
                         </button>
