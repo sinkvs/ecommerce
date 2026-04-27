@@ -2,11 +2,12 @@ import './Header.css'
 
 function Header({ pageType, setPageType, cart }) {
 
-// Если cart нет, считаем его пустым объектом {}
-const safeCart = cart || {}; 
-const totalItems = Object.values(safeCart).reduce((sum, count) => sum + count, 0);
- 
-return (
+  // Если cart нет, считаем его пустым объектом {}
+  const safeCart = cart || {};
+  const totalItems = Object.values(safeCart).reduce((sum, count) => sum + count, 0);
+  console.log('Корзина:', safeCart);
+
+  return (
     <header className="header">
       {/* ЛЕВАЯ ЧАСТЬ: Логотип и навигация */}
       <div className="header-left">
@@ -21,7 +22,7 @@ return (
 
         <nav className="header-nav">
           <button
-          className={`nav-link ${pageType === 'tv' ? 'active' : ''}`}
+            className={`nav-link ${pageType === 'tv' ? 'active' : ''}`}
             onClick={() => setPageType('tv')}
           >
             Tv

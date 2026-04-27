@@ -3,16 +3,29 @@ import products from '../../data/products'
 import ProductCard from '../components/ProductCard'
 import './TvListing.css'
 
-function TvListing({ cart, setCart }) {
+function TvListing({ cart, addToCart, updateQuantity }) {
   /* состояния фильтров */
   const [selectedBrand, setSelectedBrand] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
 
+  /* состояние для сортировки (по умолчанию от меньшего к большему) */
+  const [sortType, setSortType] = useState('low-high')
+
   /* вычисление брендов для выпадающего списка*/
   const uniqueBrands = [...new Set(products.map(p => p.make))]
+
   /*фильтрация товаров*/
   const tvProducts = products.filter(item => item.category === 'tv')
+
+  /* создаем отсортированную версию списка */
+  const sortedProducts = [...tvProducts].sort((a, b) => {
+    if (sortType === 'high-low') {
+      return b.price - a.price; // От дорогого к дешевому
+    } else {
+      return a.price - b.price; // От дешевого к дорогому (по умолчанию)
+    }
+  });
 
   return (
     <div className="home-page">
@@ -74,33 +87,41 @@ function TvListing({ cart, setCart }) {
 
           {/* Счётчик товаров и сортировка*/}
           <div className="products-header">
-            <span className="products-count">{tvProducts.length} Products</span>
+            <span className="products-count">{sortedProducts.length} Products</span>
 
             <div className="sort-container">
               <label htmlFor="sort-select" className="sort-label">Sort by:</label>
-              <select id="sort-select" className="sort-dropdown">
-                <option value="">Price: High to Low</option>
-                <option value="">Price: Low to High</option>
+
+              <select
+                id="sort-select"
+                className="sort-dropdown"
+                value={sortType}
+                onChange={(e) => setSortType(e.target.value)}
+              >
+
+                <option value="low-high">Price: High to Low</option>
+                <option value="high-low">Price: Low to High</option>
               </select>
             </div>
           </div>
 
           {/* Сетка карточек товаров */}
           <div className="product-grid">
-            {tvProducts.map(item => (
-              // +++ Передаем cart и setCart в карточку
+            {sortedProducts.map(item => (
+              // Передаем cart и setCart в карточку
               <ProductCard
                 key={item.id}
                 product={item}
-                cart={cart}
-                setCart={setCart}
+                addToCart={addToCart}
+                quantityInCart={cart[item.id] || 0}
+                updateQuantity={updateQuantity}
               />
             ))}
           </div>
 
         </main>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
 

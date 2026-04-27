@@ -1,24 +1,17 @@
 import { useState } from 'react';
 import products from '../../data/products';
 import ProductCard from '../components/ProductCard';
-import './TvListing.css'; 
+import './PhoneListing.css';
 
-function PhoneListing({ cart, setCart }) {
+function PhoneListing({ cart, addToCart, updateQuantity }) {
+
   const [selectedBrand, setSelectedBrand] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('5000');
 
   // Фильтр по категории "phone"
-  const phoneProductsAll = products.filter(item => item.category === 'phone');
-  const uniqueBrands = [...new Set(phoneProductsAll.map(p => p.make))];
-
-  const filteredProducts = phoneProductsAll.filter(item => {
-    const matchesBrand = selectedBrand ? item.make === selectedBrand : true;
-    const min = minPrice ? Number(minPrice.replace('$', '')) : 0;
-    const max = maxPrice ? Number(maxPrice.replace('$', '')) : 5000;
-    const matchesPrice = item.price >= min && item.price <= max;
-    return matchesBrand && matchesPrice;
-  });
+  const phoneProducts = products.filter(item => item.category === 'phone');
+  const uniqueBrands = [...new Set(phoneProducts.map(p => p.make))];
 
   return (
     <div className="home-page">
@@ -42,14 +35,31 @@ function PhoneListing({ cart, setCart }) {
           <button className="apply-btn">Apply Filters</button>
         </aside>
 
+/*specialdeal добавить*/
         <main className="content">
           <div className="products-header">
-            <span className="products-count">{filteredProducts.length} Products</span>
+            <span className="products-count">{phoneProducts.length} Products</span>
+
+            <div className="sort-container">
+              <label>Sort by:</label>
+              <select id="sort-select" className="sort-dropdown">
+                <option value="">Price: High to Low</option>
+                <option value="">Price: Low to High</option>
+              </select>
+            </div>
           </div>
           <div className="product-grid">
-            {filteredProducts.map(item => (
-              <ProductCard key={item.id} product={item} cart={cart} setCart={setCart} />
-            ))}
+            {
+              phoneProducts.map(item => (
+                <ProductCard
+                  key={item.id}
+                  product={item}
+                  // +++ Передаем новые пропсы для работы корзины
+                  addToCart={addToCart}
+                  quantityInCart={cart[item.id] || 0}
+                  updateQuantity={updateQuantity}
+                />
+              ))}
           </div>
         </main>
       </div>

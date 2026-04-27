@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import products from '../../data/products';
 import ProductCard from '../components/ProductCard';
-import './TvListing.css'; 
+import './LaptopListing.css';
 
 function LaptopListing({ cart, setCart }) {
   const [selectedBrand, setSelectedBrand] = useState('');
@@ -9,16 +9,8 @@ function LaptopListing({ cart, setCart }) {
   const [maxPrice, setMaxPrice] = useState('5000');
 
   // Фильтр по категории "laptop"
-  const laptopProductsAll = products.filter(item => item.category === 'laptop');
-  const uniqueBrands = [...new Set(laptopProductsAll.map(p => p.make))];
-
-  const filteredProducts = laptopProductsAll.filter(item => {
-    const matchesBrand = selectedBrand ? item.make === selectedBrand : true;
-    const min = minPrice ? Number(minPrice.replace('$', '')) : 0;
-    const max = maxPrice ? Number(maxPrice.replace('$', '')) : 5000;
-    const matchesPrice = item.price >= min && item.price <= max;
-    return matchesBrand && matchesPrice;
-  });
+  const laptopProducts = products.filter(item => item.category === 'laptop');
+  const uniqueBrands = [...new Set(laptopProducts.map(p => p.make))];
 
   return (
     <div className="home-page">

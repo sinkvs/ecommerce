@@ -49,15 +49,34 @@ const Content = ({ pageType, setPageType, cart, setCart }) => {
       {pageType === 'tv' && (
         <TvListing
           cart={cart}
-          setCart={setCart}
+          addToCart={handleAddToCart}
           updateQuantity={handleUpdateQuantity}
-          setPageType={setPageType}
         />
       )}
 
-      {pageType === 'phone' && <PhoneListing cart={cart} setCart={setCart} />}
-      {pageType === 'laptop' && <LaptopListing cart={cart} setCart={setCart} />}
-      {pageType === 'cart' && <Cart cart={cart} setCart={setCart} setPageType={setPageType} />}
+      {pageType === 'phone' && (
+        <PhoneListing
+          cart={cart}
+          addToCart={handleAddToCart}
+          updateQuantity={handleUpdateQuantity}
+        />
+      )}
+
+      {pageType === 'laptop' && (
+        <LaptopListing
+          cart={cart}
+          addToCart={handleAddToCart}
+          updateQuantity={handleUpdateQuantity}
+        />
+      )}
+
+      {pageType === 'cart' && (
+        <Cart
+          cart={cart}
+          setCart={setCart}
+          setPageType={setPageType}
+        />
+      )}
     </>
   );
 };
