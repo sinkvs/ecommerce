@@ -1,12 +1,13 @@
 .header {
   display: flex;
-  justify-content: space-between; /* Расталкивает левую и правую части */
+  justify-content: space-between;
+  /* Расталкивает левую и правую части */
   align-items: center;
   padding: 20px 30px;
   background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-   /* Sticky header */
+  /* Sticky header */
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -16,7 +17,8 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 30px; /* Расстояние между логотипом и ссылками */
+  gap: 30px;
+  /* Расстояние между логотипом и ссылками */
 }
 
 .logo {
@@ -28,7 +30,8 @@
 
 .header-nav {
   display: flex;
-  gap: 15px; /* Расстояние между ссылками TV, Phone, Laptop */
+  gap: 15px;
+  /* Расстояние между ссылками TV, Phone, Laptop */
 }
 
 .nav-link {
@@ -49,10 +52,13 @@
 /* Правая часть: иконки */
 .header-right {
   display: flex;
-  gap: 15px; /* Расстояние между иконками */
+  gap: 15px;
+  /* Расстояние между иконками */
 }
 
 .icon-btn {
+  position: relative;
+  /* без этого не будет позиционирования количества в иконке корзины*/
   background: none;
   border: none;
   font-size: 24px;
@@ -65,4 +71,46 @@
 .icon-btn:hover {
   background-color: #f0f0f0;
   transform: scale(1.1);
+}
+
+/* ... Твой существующий код выше остается без изменений (~) ... */
+
+.icon-btn:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.1);
+}
+
+/* Кнопки навигации в ссылки */
+.nav-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-family: inherit;
+}
+
+/* Стиль для активной вкладки (когда мы на странице TV) */
+.nav-link.active {
+  color: #007bff;
+  background-color: #e6f2ff;
+  font-weight: bold;
+}
+
+/* Позиционирование для бейджа корзины */
+.cart-btn {
+  position: relative;
+}
+
+/* Кружок с цифрой */
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
 }

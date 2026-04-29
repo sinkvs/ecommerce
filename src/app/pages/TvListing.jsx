@@ -1,0 +1,151 @@
+import { useState } from 'react'
+import products from '../../data/products'
+import ProductCard from '../components/ProductCard'
+import { sortProducts } from '../utils/ProductSort';
+import './TvListing.css'
+
+function TvListing({ cart, addToCart, updateQuantity }) {
+  /* черновики ввода пользователем */
+  const [selectedBrand, setSelectedBrand] = useState('')
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('5000')
+
+  /* для примененных фильтров */
+  const [activeBrand, setActiveBrand] = useState("");
+  const [activeMinPrice, setActiveMinPrice] = useState("");
+  const [activeMaxPrice, setActiveMaxPrice] = useState("5000");
+
+  /* состояние для сортировки (по умолчанию от меньшего к большему) */
+  const [sortType, setSortType] = useState('low-high')
+
+  /*фильтрация товаров*/
+  const tvProducts = products.filter(item => item.category === 'tv')
+
+  /* вычисление брендов для выпадающего списка*/
+  const uniqueBrands = [...new Set(tvProducts.map(p => p.make))]
+
+  /* применяем активные фильтры к списку */
+  const filteredProducts = tvProducts.filter((item) => {
+    // Если бренд выбран и он не совпадает с товаром - пропускаем
+    if (activeBrand && item.make !== activeBrand) return false;
+    // Если мин. цена указана и товар дешевле - пропускаем
+    if (activeMinPrice !== "" && item.price < Number(activeMinPrice))
+      return false;
+    // Если макс. цена указана и товар дороже - пропускаем
+    if (activeMaxPrice !== "" && item.price > Number(activeMaxPrice))
+      return false;
+
+    return true; // Товар подходит
+  });
+
+  /* создаем отсортированную версию списка */
+  const sortedProducts = sortProducts(filteredProducts, sortType);
+
+  /* обработчик кнопки apply */
+  const handleApplyFilters = () => {
+    // Переносим значения из инпутов в активные фильтры
+    setActiveBrand(selectedBrand);
+    setActiveMinPrice(minPrice);
+    setActiveMaxPrice(maxPrice);
+  };
+
+  return (
+    <div className="home-page">
+      {/* Заголовок с логотипом и иконками */}
+
+      {/* Основной контейнер */}
+      <div className="page-layout">
+
+        {/* Левая колонка: Filters */}
+        <aside className="sidebar">
+          <h3>Filters</h3>
+          {/* фильтр по бренду */}
+          <div className="filter-group">
+            <label htmlFor="brand">Brand</label>
+            <select
+              id="brand"
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+            >
+              <option value="" disabled hidden>Select Brand</option>
+              {uniqueBrands.map(brand => (
+                <option key={brand} value={brand}>{brand}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* фильтр по цене */}
+          <div className="filter-group">
+            <label>Price Range</label>
+            <div className="price-inputs">
+              <input
+                type="text"
+                placeholder="$0"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="$5,000"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* кнопка Apply */}
+          <button className="apply-btn" onClick={handleApplyFilters}>
+            Apply Filters
+          </button>
+
+          {/* баннер */}
+          <div className="special-deal-banner">
+            <h4>Special Deal</h4>
+            <p className="deal-timer">Offer expires in: <strong>0:59:59</strong></p>
+          </div>
+
+        </aside>
+
+        {/* Правая колонка: Товары */}
+        <main className="content">
+
+          {/* Счётчик товаров и сортировка*/}
+          <div className="products-header">
+            <span className="products-count">{sortedProducts.length} Products</span>
+
+            <div className="sort-container">
+              <label htmlFor="sort-select" className="sort-label">Sort by:</label>
+
+              <select
+                id="sort-select"
+                className="sort-dropdown"
+                value={sortType}
+                onChange={(e) => setSortType(e.target.value)}
+              >
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Сетка карточек товаров */}
+          <div className="product-grid">
+            {sortedProducts.map(item => (
+              // Передаем cart и setCart в карточку
+              <ProductCard
+                key={item.id}
+                product={item}
+                addToCart={addToCart}
+                quantityInCart={cart[item.id] || 0}
+                updateQuantity={updateQuantity}
+              />
+            ))}
+          </div>
+
+        </main>
+      </div >
+    </div >
+  )
+}
+
+export default TvListing
