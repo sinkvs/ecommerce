@@ -122,8 +122,8 @@ function TvListing({ cart, addToCart, updateQuantity }) {
                 value={sortType}
                 onChange={(e) => setSortType(e.target.value)}
               >
-                <option value="low-high">Price: High to Low</option>
-                <option value="high-low">Price: Low to High</option>
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
               </select>
             </div>
           </div>

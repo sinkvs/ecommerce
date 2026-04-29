@@ -52,67 +52,63 @@ const Cart = ({ cart, setCart, setPageType }) => {
 
       {/* Обертка для двух колонок */}
       <div className="cart-container">
-
         {/* Список товаров */}
         <div className="cart-list">
           {items.map(item => (
             <div key={item.id} className="cart-row">
-              <img src={item.images[0]} alt={item.model} className="thumb" />
 
-              <div className="info">
-                <div className="product-details">
-                  <div className="product-name">{item.make} {item.model}</div>
-                  <div className="product-price">${item.price.toLocaleString()}</div>
+              {/* Левая часть (картинка, название, кнопки) */}
+              <div className="product-left">
+                <img src={item.images[0]} alt={item.model} className="thumb" />
+                <div className="product-info">
+                  <div className="product-brand">{item.make}</div>
+                  <div className="product-model">{item.model}</div>
+                  <div className="quantity-controls">
+                    <button onClick={() => updateQty(item.id, -1)}>-</button>
+                    <span>{item.qty}</span>
+                    <button onClick={() => updateQty(item.id, 1)}>+</button>
+                  </div>
                 </div>
+              </div>
 
+              {/* Корзина + Цена за товар */}
+              <div className="product-right">
                 <button
                   onClick={() => updateQty(item.id, -100)}
-                  className="trash-btn-inline"
+                  className="trash-btn"
                   aria-label="Remove item"
                 >
                   🗑️
                 </button>
-              </div>
-              < div className="quantity-controls" >
-                <button onClick={() => updateQty(item.id, -1)}>-</button>
-                <span>{item.qty}</span>
-                <button onClick={() => updateQty(item.id, 1)}>+</button>
+
+                <div className="row-total">
+                  ${(item.price * item.qty).toLocaleString()}
+                </div>
               </div>
 
-              {/* Цена за строку (отдельный соседний блок) */}
-              < div className="row-total" >
-                ${(item.price * item.qty).toLocaleString()}
-              </div>
-
-            </div>
+            </div >
           ))}
-        </div>
-        {/* Правая колонка. Order Summary */}
+        </div >
+
         <div className="order-summary">
           <h3>Order Summary</h3>
-
           <div className="summary-row">
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
-
           <div className="summary-row">
             <span>Tax (8%)</span>
             <span>${tax.toFixed(2)}</span>
           </div>
-
           <div className="summary-row">
             <span>Shipping</span>
             <span>Calculated at checkout</span>
           </div>
-
           <div className="summary-divider"></div>
-
           <div className="summary-row grand-total">
             <span>Total</span>
             <span>${total.toFixed(2)}</span>
           </div>
-
           <div className="summary-actions">
             <button className="btn-primary">Proceed to Checkout</button>
             <button className="btn-secondary" onClick={() => setPageType('tv')}>Continue Shopping</button>
@@ -120,8 +116,7 @@ const Cart = ({ cart, setCart, setPageType }) => {
         </div>
 
       </div>
-
-    </div >
+    </div>
   );
 };
 
