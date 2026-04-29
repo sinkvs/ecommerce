@@ -4,13 +4,18 @@ import './Cart.css';
 
 const Cart = ({ cart, setCart, setPageType }) => {
   const cartIds = Object.keys(cart);
-  
+
   // Если корзина пуста
   if (cartIds.length === 0) {
     return (
       <div className="cart-empty">
         <h2>Your cart is empty</h2>
-        <button onClick={() => setPageType('tv')}>Continue Shopping</button>
+        <button
+          className="continue-shopping-btn"
+          onClick={() => setPageType('tv')}
+        >
+          Continue Shopping
+        </button>
       </div>
     );
   }
@@ -44,45 +49,79 @@ const Cart = ({ cart, setCart, setPageType }) => {
   return (
     <div className="cart-page">
       <h2>Shopping Cart</h2>
-      
-      {/* Список товаров */}
-      <div className="cart-list">
-        {items.map(item => (
-          <div key={item.id} className="cart-row">
-            <img src={item.images[0]} alt={item.model} className="thumb" />
-            
-            <div className="info">
-              <div>{item.make} {item.model}</div>
-              <div>${item.price.toLocaleString()}</div>
+
+      {/* Обертка для двух колонок */}
+      <div className="cart-container">
+
+        {/* Список товаров */}
+        <div className="cart-list">
+          {items.map(item => (
+            <div key={item.id} className="cart-row">
+              <img src={item.images[0]} alt={item.model} className="thumb" />
+
+              <div className="info">
+                <div className="product-details">
+                  <div className="product-name">{item.make} {item.model}</div>
+                  <div className="product-price">${item.price.toLocaleString()}</div>
+                </div>
+
+                <button
+                  onClick={() => updateQty(item.id, -100)}
+                  className="trash-btn-inline"
+                  aria-label="Remove item"
+                >
+                  🗑️
+                </button>
+              </div>
+              < div className="quantity-controls" >
+                <button onClick={() => updateQty(item.id, -1)}>-</button>
+                <span>{item.qty}</span>
+                <button onClick={() => updateQty(item.id, 1)}>+</button>
+              </div>
+
+              {/* Цена за строку (отдельный соседний блок) */}
+              < div className="row-total" >
+                ${(item.price * item.qty).toLocaleString()}
+              </div>
+
             </div>
-            
-            <div className="controls">
-              <button onClick={() => updateQty(item.id, -1)}>-</button>
-              <span>{item.qty}</span>
-              <button onClick={() => updateQty(item.id, 1)}>+</button>
-              <button onClick={() => updateQty(item.id, -100)} className="trash">🗑️</button>
-            </div>
-            
-            <div className="row-total">
-              ${(item.price * item.qty).toLocaleString()}
-            </div>
+          ))}
+        </div>
+        {/* Правая колонка. Order Summary */}
+        <div className="order-summary">
+          <h3>Order Summary</h3>
+
+          <div className="summary-row">
+            <span>Subtotal</span>
+            <span>${subtotal.toFixed(2)}</span>
           </div>
-        ))}
+
+          <div className="summary-row">
+            <span>Tax (8%)</span>
+            <span>${tax.toFixed(2)}</span>
+          </div>
+
+          <div className="summary-row">
+            <span>Shipping</span>
+            <span>Calculated at checkout</span>
+          </div>
+
+          <div className="summary-divider"></div>
+
+          <div className="summary-row grand-total">
+            <span>Total</span>
+            <span>${total.toFixed(2)}</span>
+          </div>
+
+          <div className="summary-actions">
+            <button className="btn-primary">Proceed to Checkout</button>
+            <button className="btn-secondary" onClick={() => setPageType('tv')}>Continue Shopping</button>
+          </div>
+        </div>
+
       </div>
 
-      {/* Сводка заказа */}
-      <div className="summary">
-        <div>Subtotal: ${subtotal.toFixed(2)}</div>
-        <div>Tax (8%): ${tax.toFixed(2)}</div>
-        <div>Shipping: Calculated at checkout</div>
-        <div className="grand-total">Total: ${total.toFixed(2)}</div>
-        
-        <div className="actions">
-          <button onClick={() => setPageType('tv')}>Back to Shopping</button>
-          <button>Proceed to Checkout</button>
-        </div>
-      </div>
-    </div>
+    </div >
   );
 };
 

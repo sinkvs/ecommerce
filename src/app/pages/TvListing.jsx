@@ -1,31 +1,53 @@
 import { useState } from 'react'
 import products from '../../data/products'
 import ProductCard from '../components/ProductCard'
+import { sortProducts } from '../utils/ProductSort';
 import './TvListing.css'
 
 function TvListing({ cart, addToCart, updateQuantity }) {
-  /* состояния фильтров */
+  /* черновики ввода пользователем */
   const [selectedBrand, setSelectedBrand] = useState('')
   const [minPrice, setMinPrice] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('5000')
+
+  /* для примененных фильтров */
+  const [activeBrand, setActiveBrand] = useState("");
+  const [activeMinPrice, setActiveMinPrice] = useState("");
+  const [activeMaxPrice, setActiveMaxPrice] = useState("5000");
 
   /* состояние для сортировки (по умолчанию от меньшего к большему) */
   const [sortType, setSortType] = useState('low-high')
 
-  /* вычисление брендов для выпадающего списка*/
-  const uniqueBrands = [...new Set(products.map(p => p.make))]
-
   /*фильтрация товаров*/
   const tvProducts = products.filter(item => item.category === 'tv')
 
-  /* создаем отсортированную версию списка */
-  const sortedProducts = [...tvProducts].sort((a, b) => {
-    if (sortType === 'high-low') {
-      return b.price - a.price; // От дорогого к дешевому
-    } else {
-      return a.price - b.price; // От дешевого к дорогому (по умолчанию)
-    }
+  /* вычисление брендов для выпадающего списка*/
+  const uniqueBrands = [...new Set(tvProducts.map(p => p.make))]
+
+  /* применяем активные фильтры к списку */
+  const filteredProducts = tvProducts.filter((item) => {
+    // Если бренд выбран и он не совпадает с товаром - пропускаем
+    if (activeBrand && item.make !== activeBrand) return false;
+    // Если мин. цена указана и товар дешевле - пропускаем
+    if (activeMinPrice !== "" && item.price < Number(activeMinPrice))
+      return false;
+    // Если макс. цена указана и товар дороже - пропускаем
+    if (activeMaxPrice !== "" && item.price > Number(activeMaxPrice))
+      return false;
+
+    return true; // Товар подходит
   });
+
+  /* создаем отсортированную версию списка */
+  const sortedProducts = sortProducts(filteredProducts, sortType);
+
+  /* обработчик кнопки apply */
+  const handleApplyFilters = () => {
+    // Переносим значения из инпутов в активные фильтры
+    setActiveBrand(selectedBrand);
+    setActiveMinPrice(minPrice);
+    setActiveMaxPrice(maxPrice);
+  };
 
   return (
     <div className="home-page">
@@ -72,7 +94,9 @@ function TvListing({ cart, addToCart, updateQuantity }) {
           </div>
 
           {/* кнопка Apply */}
-          <button className="apply-btn">Apply Filters</button>
+          <button className="apply-btn" onClick={handleApplyFilters}>
+            Apply Filters
+          </button>
 
           {/* баннер */}
           <div className="special-deal-banner">
@@ -98,7 +122,6 @@ function TvListing({ cart, addToCart, updateQuantity }) {
                 value={sortType}
                 onChange={(e) => setSortType(e.target.value)}
               >
-
                 <option value="low-high">Price: High to Low</option>
                 <option value="high-low">Price: Low to High</option>
               </select>
