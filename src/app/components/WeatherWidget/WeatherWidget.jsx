@@ -16,6 +16,12 @@ const WeatherWidget = () => {
     // Хранит текстовое значение поля (название города)
     const [cityInput, setCityInput] = useState('');
 
+    // Ошибка при поиске города 
+    const [geoError, setGeoError] = useState(null);
+
+    // Ошибка при получении погоды
+    const [weatherError, setWeatherError] = useState(null);
+
     // useEffect 1 (загрузка погоды для Тюмени при монтировании)
     useEffect(() => {
         const fetchCoodrinates = async () => {
@@ -39,9 +45,10 @@ const WeatherWidget = () => {
 
                     if (weatherResponse.ok) {
                         setWeatherData(weatherResult);
-                        console.log('Погода', weatherResult);
+                        setWeatherError(null);
                     } else {
-                        console.error('Ошибка погоды:', weatherResult.message);
+                        setWeatherError(true);
+                        setWeatherData(null); // чистим для отображения сообщения об ошибке
                     }
                 } else {
                     console.log('Город Тюмень не найден');
@@ -59,23 +66,54 @@ const WeatherWidget = () => {
     useEffect(() => {
         if (weatherData) {
             setCityInput(weatherData.name);
+            setGeoError(null);
         }
     }, [weatherData]);
 
     // Ф-я обработчки
     const handleSearch = async () => {
+        // Сброс старых ошибок перед новым запросом
+        setGeoError(null);
+        setWeatherError(null);
+
+        // Если поле пустое - не ищем
+        if (!cityInput.trim())
+            return;
+
         console.log('Кнопка нажата! Город:', cityInput);
 
         try {
             const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
-            const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=1&appid=${apiKey}`;
 
+            // Запрашиваем координаты
+            const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=1&appid=${apiKey}`;
             const response = await fetch(geoUrl);
             const data = await response.json();
 
             console.log('Координаты нового города:', data);
 
-            // Дальше здесь будет логика проверки data.length и запрос погоды
+            // Город найден?
+            if (data.length === 0) {
+                setGeoError(`Не удалось получить данные для города ${cityInput}`);
+                setCityInput(''); // чистим input
+                return;
+            }
+
+            // Запрашиваем погоду, если город найден
+            const { lat, lon } = data[0];
+            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=ru`;
+
+            const weatherResponse = await fetch(weatherUrl);
+            const weatherResult = await weatherResponse.json();
+
+            if (weatherResponse.ok) {
+                setWeatherData(weatherResult);
+                setWeatherError(null);
+            } else {
+                setWeatherError(true);
+                setWeatherData(null);
+            }
+
         } catch (error) {
             console.error('Ошибка при получении координат:', error);
         }
@@ -103,8 +141,8 @@ const WeatherWidget = () => {
         }
 
         // если не удалось получить данные
-        if (coords) {
-            return <div>Не удалось получить данные о погоде</div>
+        if (weatherError) {
+            return <div className="error-message weather-error">Не удалось получить данные</div>
         }
         return <div>Город не найден</div>;
     };
@@ -121,12 +159,16 @@ const WeatherWidget = () => {
                 <input
                     type="text"
                     value={cityInput}
-                    onChange={(e) => setCityInput(e.target.value)}
+                    onChange={(e) => {
+                        setCityInput(e.target.value);
+                        setGeoError(null);
+                    }}
                     placeholder="Введите город"
                 />
                 {/* Привязываем функцию к кнопке */}
                 <button onClick={handleSearch}>Получить погоду</button>
             </div>
+            {geoError && <div className="error-message geo-error">{geoError}</div>}
         </div>
     );
 };
