@@ -1,5 +1,5 @@
 import { useState } from "react"
-import './ProductCard.css'
+import '../../styles/ProductCard.css'
 
 // Компонент карточки товара с кнопками добавления/изменения количества в корзине
 function ProductCard({ product, addToCart, quantityInCart, updateQuantity }) {

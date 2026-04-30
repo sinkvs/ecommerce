@@ -2,7 +2,7 @@ import { useState } from 'react'
 import products from '../../data/products'
 import ProductCard from '../components/ProductCard'
 import { sortProducts } from '../utils/ProductSort';
-import './TvListing.css'
+import '../../styles/TvListing.css'
 
 function TvListing({ cart, addToCart, updateQuantity }) {
   /* черновики ввода пользователем */

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import products from '../../data/products';
 import ProductCard from '../components/ProductCard';
 import { sortProducts } from '../utils/ProductSort';
-import './PhoneListing.css';
+import '../../styles/PhoneListing.css';
 
 function PhoneListing({ cart, addToCart, updateQuantity }) {
 
