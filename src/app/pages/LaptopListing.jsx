@@ -2,6 +2,7 @@ import { useState } from 'react';
 import products from '../../data/products';
 import ProductCard from '../components/ProductCard';
 import { sortProducts } from '../utils/ProductSort';
+import WeatherWidget from '../components/WeatherWidget/WeatherWidget';
 import '../../styles/LaptopListing.css';
 
 function LaptopListing({ cart, addToCart, updateQuantity }) {
