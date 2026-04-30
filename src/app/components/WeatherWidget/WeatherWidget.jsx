@@ -139,7 +139,7 @@ const WeatherWidget = () => {
                     <p>Температура: {Math.round(weatherData.main.temp)}°C</p>
                     <p>Описание: {weatherData.weather[0].description}</p>
                     <img
-                        src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`}
+                        src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
                         alt={weatherData.weather[0].description}
                     />
                 </div>
@@ -175,7 +175,7 @@ const WeatherWidget = () => {
                 {/* Привязываем функцию к кнопке */}
                 <button onClick={handleSearch} disabled={isSearching}>
                     {isSearching ? 'Поиск...' : 'Получить погоду'}
-                    </button>
+                </button>
             </div>
             {geoError && <div className="error-message geo-error">{geoError}</div>}
         </div>
