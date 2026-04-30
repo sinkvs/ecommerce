@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import '../../../styles/WeatherWidget.css';
 
 const WeatherWidget = () => {
@@ -28,14 +28,34 @@ const WeatherWidget = () => {
     // Состояние видимости виджета
     const [isVisible, setIsVisible] = useState(true);
 
+    // useRef для AbortController
+    const abortControllerRef = useRef(null);
+
     // useEffect 1 (загрузка погоды для Тюмени при монтировании)
     useEffect(() => {
+        const controller = new AbortController(); // создаем контроллер
+
+        // Проверяем память перед запросом
+        const cached = localStorage.getItem('my_weather_cache');
+        if (cached) {
+            setWeatherData(JSON.parse(cached));
+            setIsLoading(false);
+            return; // запрос не делаем, данные уже есть
+        }
+
         const fetchCoodrinates = async () => {
             try {
                 const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
+
+                // запрашиваем координаты
                 const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=Тюмень&limit=1&appid=${apiKey}`;
 
-                const geoResponse = await fetch(geoUrl);
+                // передаем сигнал в фетч
+                const geoResponse = await fetch(geoUrl, { signal: controller.signal });
+
+                // если запрос был отменен
+                if (!geoResponse.ok) return;
+
                 const geoData = await geoResponse.json();
 
                 // Логика сохранения координат
@@ -46,26 +66,41 @@ const WeatherWidget = () => {
                     const { lat, lon } = geoData[0];
                     const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=ru`;
 
-                    const weatherResponse = await fetch(weatherUrl);
+                    // передаем тот же сигнал во второй фетч
+                    const weatherResponse = await fetch(weatherUrl, { signal: controller.signal });
+
+                    if (!weatherResponse.ok) return;
+
                     const weatherResult = await weatherResponse.json();
 
                     if (weatherResponse.ok) {
                         setWeatherData(weatherResult);
                         setWeatherError(null);
+
+                        // Сохраняем результат в память
+                        localStorage.setItem('my_weather_cache', JSON.stringify(weatherResult));
                     } else {
                         setWeatherError(true);
                         setWeatherData(null); // чистим для отображения сообщения об ошибке
                     }
                 } else {
-                    console.log('Город Тюмень не найден');
+                    setGeoError('Не удалось получить данные для города Тюмень');
+                    setCityInput('');
                 }
             } catch (error) {
-                console.error('Ошибка сети:', error);
+                if (error.name !== 'AbortError') {
+                    console.error('Ошибка сети:', error);
+                }
             } finally {
                 setIsLoading(false); // убираем лоадер
             }
         };
         fetchCoodrinates();
+
+        //  При размонтировании компонента очищаем
+        return () => {
+            controller.abort(); // отменяем все запросы, которые используют этот signal
+        };
     }, []);
 
     // useEffect 2 (синхронизация названия города на входе)
@@ -78,6 +113,16 @@ const WeatherWidget = () => {
 
     // Ф-я обработчки
     const handleSearch = async () => {
+
+        // Отменяем предыдущий запрос, если он еще идет
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+
+        // Создаем новый контроллер для текущего запроса
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+
         // Блокируем интерфейс и сбрасываем ошибки
         setIsSearching(true);
         setGeoError(null);
@@ -86,6 +131,7 @@ const WeatherWidget = () => {
         // Если поле пустое, блокируем и выходим
         if (!cityInput.trim()) {
             setIsSearching(false);
+            abortControllerRef.current = null;
             return;
         }
 
@@ -94,7 +140,12 @@ const WeatherWidget = () => {
 
             // Запрашиваем координаты
             const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=1&appid=${apiKey}`;
-            const response = await fetch(geoUrl);
+
+            // Передаем сигнал в фетч
+            const response = await fetch(geoUrl, { signal: controller.signal });
+
+            if (!response.ok) throw new Error('Geo API error');
+
             const data = await response.json();
 
             console.log('Координаты нового города:', data);
@@ -110,21 +161,27 @@ const WeatherWidget = () => {
             const { lat, lon } = data[0];
             const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=ru`;
 
-            const weatherResponse = await fetch(weatherUrl);
+            // Передаем тот же сигнал во второй фетч
+            const weatherResponse = await fetch(weatherUrl, { signal: controller.signal });
+
+            if (!weatherResponse.ok) throw new Error('Weather API error');
+
             const weatherResult = await weatherResponse.json();
 
-            if (weatherResponse.ok) {
-                setWeatherData(weatherResult);
-            } else {
-                setWeatherError(true);
-                setWeatherData(null);
-            }
+            setWeatherData(weatherResult);
 
         } catch (error) {
-            console.error('Ошибка при получении координат:', error);
-            setWeatherError(true); // если ошибка сети, тоже показываем
+            // игнор ошибки отмены (AbortError), пользователю ее не показываем
+            if (error.name !== 'AbortError' && error.message !== 'Abort') {
+                console.error('Ошибка:', error);
+                setWeatherError(true);
+            }
         } finally {
-            setIsSearching(false); // разблок интерфейса
+            // чистим, если это был последний активный контроллер
+            if (abortControllerRef.current === controller) {
+                abortControllerRef.current = null;
+            }
+            setIsSearching(false); // разблокировка в любом случае
         }
     };
 
@@ -153,7 +210,7 @@ const WeatherWidget = () => {
         if (weatherError) {
             return <div className="error-message weather-error">Не удалось получить данные</div>
         }
-        return <div>Город не найден</div>;
+        return <div>Загрузка...</div>;
     };
 
     if (!isVisible) {
@@ -169,23 +226,26 @@ const WeatherWidget = () => {
             {renderContent()}
 
             {/*input и кнопка поиска*/}
-            <div className="search-box">
-                <input
-                    type="text"
-                    value={cityInput}
-                    onChange={(e) => {
-                        setCityInput(e.target.value);
-                        setGeoError(null);
-                    }}
-                    placeholder="Введите город"
-                    disabled={isSearching}
-                />
-                {/* Привязываем функцию к кнопке */}
-                <button onClick={handleSearch} disabled={isSearching}>
-                    {isSearching ? 'Поиск...' : 'Получить погоду'}
-                </button>
-            </div>
-            {geoError && <div className="error-message geo-error">{geoError}</div>}
+            {!isLoading && (
+                <div className="search-box">
+                    <input
+                        type="text"
+                        value={cityInput}
+                        onChange={(e) => {
+                            setCityInput(e.target.value);
+                            setGeoError(null);
+                        }}
+                        placeholder="Введите город"
+                        disabled={isSearching}
+                    />
+                    {/* Привязываем функцию к кнопке */}
+                    <button onClick={handleSearch} disabled={isSearching}>
+                        {isSearching ? 'Поиск...' : 'Получить погоду'}
+                    </button>
+                </div>
+            )}
+
+            {!isLoading && geoError && <div className="error-message geo-error">{geoError}</div>}
         </div>
     );
 };

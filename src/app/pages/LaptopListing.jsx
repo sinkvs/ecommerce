@@ -78,6 +78,7 @@ function LaptopListing({ cart, addToCart, updateQuantity }) {
             <h4>Special Deal</h4>
             <p className="deal-timer">Offer expires in: <strong>0:59:59</strong></p>
           </div>
+          <WeatherWidget />
         </aside>
 
         <main className="content">
