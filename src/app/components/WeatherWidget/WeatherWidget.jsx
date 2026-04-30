@@ -6,13 +6,13 @@ const WeatherWidget = () => {
 
     // Состояние isLoading. True - показываем лоадер, False - основной контент
     const [isLoading, setIsLoading] = useState(true);
-    
+
     // Состояние для координат (широта, долгота)
     const [coords, setCoords] = useState(null);
-    
+
     // Хранит данные о погоде
     const [weatherData, setWeatherData] = useState(null);
-    
+
     // Хранит текстовое значение поля (название города)
     const [cityInput, setCityInput] = useState('');
 
@@ -22,7 +22,7 @@ const WeatherWidget = () => {
             try {
                 const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
                 const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=Тюмень&limit=1&appid=${apiKey}`;
-                
+
                 const geoResponse = await fetch(geoUrl);
                 const geoData = await geoResponse.json();
 
@@ -60,7 +60,26 @@ const WeatherWidget = () => {
         if (weatherData) {
             setCityInput(weatherData.name);
         }
-    }, [weatherData]); 
+    }, [weatherData]);
+
+    // Ф-я обработчки
+    const handleSearch = async () => {
+        console.log('Кнопка нажата! Город:', cityInput);
+
+        try {
+            const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
+            const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=1&appid=${apiKey}`;
+
+            const response = await fetch(geoUrl);
+            const data = await response.json();
+
+            console.log('Координаты нового города:', data);
+
+            // Дальше здесь будет логика проверки data.length и запрос погоды
+        } catch (error) {
+            console.error('Ошибка при получении координат:', error);
+        }
+    };
 
     // Рендеринг
     const renderContent = () => {
@@ -91,7 +110,23 @@ const WeatherWidget = () => {
     };
     return (
         <div className="weather-widget">
+            {/* Кнопка закрыть*/}
+            <button className="close-btn">x</button>
+
+            {/*Контент погоды*/}
             {renderContent()}
+
+            {/*input и кнопка поиска*/}
+            <div className="search-box">
+                <input
+                    type="text"
+                    value={cityInput}
+                    onChange={(e) => setCityInput(e.target.value)}
+                    placeholder="Введите город"
+                />
+                {/* Привязываем функцию к кнопке */}
+                <button onClick={handleSearch}>Получить погоду</button>
+            </div>
         </div>
     );
 };
