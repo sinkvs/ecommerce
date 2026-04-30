@@ -22,6 +22,9 @@ const WeatherWidget = () => {
     // Ошибка при получении погоды
     const [weatherError, setWeatherError] = useState(null);
 
+    // Состояние поиска (блокировка)
+    const [isSearching, setIsSearching] = useState(false);
+
     // useEffect 1 (загрузка погоды для Тюмени при монтировании)
     useEffect(() => {
         const fetchCoodrinates = async () => {
@@ -72,15 +75,16 @@ const WeatherWidget = () => {
 
     // Ф-я обработчки
     const handleSearch = async () => {
-        // Сброс старых ошибок перед новым запросом
+        // Блокируем интерфейс и сбрасываем ошибки
+        setIsSearching(true);
         setGeoError(null);
         setWeatherError(null);
 
-        // Если поле пустое - не ищем
-        if (!cityInput.trim())
+        // Если поле пустое, блокируем и выходим
+        if (!cityInput.trim()) {
+            setIsSearching(false);
             return;
-
-        console.log('Кнопка нажата! Город:', cityInput);
+        }
 
         try {
             const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
@@ -108,7 +112,6 @@ const WeatherWidget = () => {
 
             if (weatherResponse.ok) {
                 setWeatherData(weatherResult);
-                setWeatherError(null);
             } else {
                 setWeatherError(true);
                 setWeatherData(null);
@@ -116,6 +119,9 @@ const WeatherWidget = () => {
 
         } catch (error) {
             console.error('Ошибка при получении координат:', error);
+            setWeatherError(true); // если ошибка сети, тоже показываем
+        } finally {
+            setIsSearching(false); // разблок интерфейса
         }
     };
 
@@ -164,9 +170,12 @@ const WeatherWidget = () => {
                         setGeoError(null);
                     }}
                     placeholder="Введите город"
+                    disabled={isSearching}
                 />
                 {/* Привязываем функцию к кнопке */}
-                <button onClick={handleSearch}>Получить погоду</button>
+                <button onClick={handleSearch} disabled={isSearching}>
+                    {isSearching ? 'Поиск...' : 'Получить погоду'}
+                    </button>
             </div>
             {geoError && <div className="error-message geo-error">{geoError}</div>}
         </div>
