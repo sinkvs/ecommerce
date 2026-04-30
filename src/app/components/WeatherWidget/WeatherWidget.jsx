@@ -25,6 +25,9 @@ const WeatherWidget = () => {
     // Состояние поиска (блокировка)
     const [isSearching, setIsSearching] = useState(false);
 
+    // Состояние видимости виджета
+    const [isVisible, setIsVisible] = useState(true);
+
     // useEffect 1 (загрузка погоды для Тюмени при монтировании)
     useEffect(() => {
         const fetchCoodrinates = async () => {
@@ -152,10 +155,15 @@ const WeatherWidget = () => {
         }
         return <div>Город не найден</div>;
     };
+
+    if (!isVisible) {
+        return null; // Ничего не рендерим, если виджет скрыт
+    }
+
     return (
         <div className="weather-widget">
             {/* Кнопка закрыть*/}
-            <button className="close-btn">x</button>
+            <button className="close-btn" onClick={() => setIsVisible(false)}>×</button>
 
             {/*Контент погоды*/}
             {renderContent()}
