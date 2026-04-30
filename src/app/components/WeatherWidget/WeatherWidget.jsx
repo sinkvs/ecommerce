@@ -32,7 +32,7 @@ const WeatherWidget = () => {
 
                     // Запрос погоды по полученным координатам
                     const { lat, lon } = geoData[0];
-                    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+                    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=ru`;
 
                     const weatherResponse = await fetch(weatherUrl);
                     const weatherResult = await weatherResponse.json();
