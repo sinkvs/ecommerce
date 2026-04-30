@@ -2,24 +2,31 @@ import { useEffect, useState } from 'react';
 import '../../../styles/WeatherWidget.css';
 
 const WeatherWidget = () => {
+    // -- Состояния --
+
     // Состояние isLoading. True - показываем лоадер, False - основной контент
     const [isLoading, setIsLoading] = useState(true);
-    // Состояние для координат
+    
+    // Состояние для координат (широта, долгота)
     const [coords, setCoords] = useState(null);
-    //
+    
+    // Хранит данные о погоде
     const [weatherData, setWeatherData] = useState(null);
+    
+    // Хранит текстовое значение поля (название города)
+    const [cityInput, setCityInput] = useState('');
 
-    // Запросы к API
+    // useEffect 1 (загрузка погоды для Тюмени при монтировании)
     useEffect(() => {
         const fetchCoodrinates = async () => {
             try {
                 const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
-
                 const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=Тюмень&limit=1&appid=${apiKey}`;
+                
                 const geoResponse = await fetch(geoUrl);
                 const geoData = await geoResponse.json();
 
-                // Логика соранения координат
+                // Логика сохранения координат
                 if (geoData.length > 0) {
                     setCoords(geoData[0]);
 
@@ -47,6 +54,13 @@ const WeatherWidget = () => {
         };
         fetchCoodrinates();
     }, []);
+
+    // useEffect 2 (синхронизация названия города на входе)
+    useEffect(() => {
+        if (weatherData) {
+            setCityInput(weatherData.name);
+        }
+    }, [weatherData]); 
 
     // Рендеринг
     const renderContent = () => {
