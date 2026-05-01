@@ -2,6 +2,7 @@ import { useState } from 'react';
 import products from '../../data/products';
 import ProductCard from '../components/ProductCard';
 import { sortProducts } from '../utils/ProductSort';
+import LiveTimer from '../components/LiveTimer/LiveTimer';
 import '../../styles/LaptopListing.css';
 
 function LaptopListing({ cart, addToCart, updateQuantity }) {
@@ -17,6 +18,9 @@ function LaptopListing({ cart, addToCart, updateQuantity }) {
 
   /* состояние сортировки по умолчанию от дешевого до дорогого */
   const [sortType, setSortType] = useState('low-high');
+
+  /* состояние таймера */
+  const [showTimer, setShowTimer] = useState(true);
 
   /* фильтр по категории "laptop" */
   const laptopProducts = products.filter(item => item.category === 'laptop');
@@ -73,10 +77,9 @@ function LaptopListing({ cart, addToCart, updateQuantity }) {
             Apply Filters
           </button>
           
-          <div className="special-deal-banner">
-            <h4>Special Deal</h4>
-            <p className="deal-timer">Offer expires in: <strong>0:59:59</strong></p>
-          </div>
+          {/* Живой таймер */}
+          {showTimer && <LiveTimer onClose={() => setShowTimer(false)} />}
+
         </aside>
 
         <main className="content">
