@@ -2,7 +2,9 @@ import { useState } from 'react';
 import products from '../../data/products';
 import ProductCard from '../components/ProductCard';
 import { sortProducts } from '../utils/ProductSort';
-import './PhoneListing.css';
+import LiveTimer from '../components/LiveTimer/LiveTimer';
+import WeatherWidget from '../components/WeatherWidget/WeatherWidget';
+import '../../styles/PhoneListing.css';
 
 function PhoneListing({ cart, addToCart, updateQuantity }) {
 
@@ -18,6 +20,9 @@ function PhoneListing({ cart, addToCart, updateQuantity }) {
 
   /* состояние для сортировки */
   const [sortType, setSortType] = useState('low-high');
+
+  /* состояние таймера */
+  const [showTimer, setShowTimer] = useState(true);
 
   /* фильтрация по phone */
   const phoneProducts = products.filter(item => item.category === 'phone');
@@ -74,10 +79,10 @@ function PhoneListing({ cart, addToCart, updateQuantity }) {
             Apply Filters
           </button>
 
-          <div className="special-deal-banner">
-            <h4>Special Deal</h4>
-            <p className="deal-timer">Offer expires in: <strong>0:59:59</strong></p>
-          </div>
+          {/* Живой таймер */}
+          {showTimer && <LiveTimer onClose={() => setShowTimer(false)} />}
+
+          <WeatherWidget />
         </aside>
 
         <main className="content">

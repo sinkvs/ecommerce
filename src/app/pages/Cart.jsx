@@ -1,6 +1,6 @@
 import React from 'react';
 import products from '../../data/products';
-import './Cart.css';
+import '../../styles/Cart.css';
 
 const Cart = ({ cart, setCart, setPageType }) => {
   const cartIds = Object.keys(cart);

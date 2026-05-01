@@ -1,0 +1,94 @@
+.weather-widget {
+    position: relative;
+    margin-top: 20px; /* Отступ сверху от блока таймер */
+    padding: 16px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.weather-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.weather-info p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.weather-info img {
+    background-color: #b8b6b6;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 6px;
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin: 10px auto;
+}
+
+.search-box {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 0;
+}
+
+.search-box button {
+    padding: 8px 12px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.search-box button:hover {
+    background-color: gray;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 50%;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.close-btn:hover {
+    color: #333;
+    background-color: #f0f0f0;
+}
+
+.close-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
