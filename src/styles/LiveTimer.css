@@ -1,0 +1,38 @@
+.live-timer {
+  background-color: #ff4d4f;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 300px;
+  margin: 20px auto;
+}
+
+.timer-display {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.close-btn {
+  padding: 8px 12px;
+  border: 1px solid #070707;       
+  background-color: #000000;        
+  color: #ffffff;                  
+  border-radius: 6px;           
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;             
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background-color: #1d1d1d;     
+}
