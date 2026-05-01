@@ -18,7 +18,8 @@
 .timer-controls {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .close-btn {
@@ -39,16 +40,17 @@
 
 /* Кнопки управления */
 .timer-controls button {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid #070707;       
   background-color: #000000;        
   color: #ffffff;                  
-  border-radius: 6px;           
+  border-radius: 4px;           
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;             
   transition: all 0.2s ease;
   margin: 0 5px;
+  white-space: nowrap;
 }
 
 .timer-controls button:hover:not(:disabled) {
@@ -80,18 +82,29 @@
 }
 
 .timer-finished .restart-btn, .timer-finished .close-btn {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid #070707;       
   background-color: #000000;        
   color: #ffffff;                  
   border-radius: 6px;           
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;             
   transition: all 0.2s ease;
-  margin: 0 5px;
+  margin: 0 4px;
 }
 
 .timer-finished button:hover {
   background-color: #1d1d1d;     
+}
+
+.restart-btn.highlighted {
+  background-color: #ffcc00; /* Желтый цвет для привлечения внимания */
+  color: #000;
+  border-color: #ffcc00;
+  font-weight: bold;
+}
+
+.restart-btn.highlighted:hover {
+  background-color: #e6b800;
 }
